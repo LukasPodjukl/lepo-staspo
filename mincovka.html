@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mincovka</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+</head>
+
+<body>
+
+    <h1>Mincovka</h1>
+    <input type="file" id="upload" />
+    <pre id="output"></pre>
+
+    <script>
+        document.getElementById('upload').addEventListener('change', async function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = async function (e) {
+                    const arrayBuffer = e.target.result;
+                    const workbook = new ExcelJS.Workbook();
+                    await workbook.xlsx.load(arrayBuffer);
+
+                    const worksheet = workbook.getWorksheet(1);
+                    let output = '';
+
+                    worksheet.eachRow({ includeEmpty: true }, function (row, rowNumber) {
+                        if (row.getCell('N').result != null && row.getCell('N').result != 0) {
+                            if (row.getCell('A').value != null) {
+                                output += `${rowNumber}:\t ${row.getCell('B').value} (${row.getCell('A').value}) ${row.getCell('N').result}\n`;
+                            } else {
+                                output += `${rowNumber}:\t ${row.getCell('N').result}\n`;
+                            }
+                        }
+                    });
+
+                    document.getElementById('output').textContent = output;
+                };
+
+                reader.readAsArrayBuffer(file);
+            }
+        });
+    </script>
+
+</body>
+
+</html>
