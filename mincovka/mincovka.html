@@ -30,9 +30,9 @@
                     worksheet.eachRow({ includeEmpty: true }, function (row, rowNumber) {
                         if (row.getCell('N').result != null && row.getCell('N').result != 0) {
                             if (row.getCell('A').value != null) {
-                                output += `${rowNumber}:\t ${row.getCell('B').value} (${row.getCell('A').value}) ${row.getCell('N').result}\n`;
+                                output += `${rowNumber}:\t ${row.getCell('B').value} (${row.getCell('A').value}) ${Math.ceil(row.getCell('N').result)}\n`;
                             } else {
-                                output += `${rowNumber}:\t ${row.getCell('N').result}\n`;
+                                output += `${rowNumber}:\t ${Math.ceil(row.getCell('N').result)}\n`;
                             }
                         }
                     });
