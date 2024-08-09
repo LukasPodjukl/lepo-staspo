@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <style>
     table,
     th,
@@ -17,11 +18,9 @@
 </head>
 
 <body>
-
     <h1>Mincovka</h1>
     <input type="file" id="upload" />
     <pre id="output"></pre>
-
     <script>
         document.getElementById('upload').addEventListener('change', async function (event) {
             const file = event.target.files[0];
@@ -35,36 +34,52 @@
                     const worksheet = workbook.getWorksheet(1);
                     let output = '';
 
-                    const cols = ["ID", "1000", "500", "200", "100", "50", "20", "10", "5", "2", "1"];
+                    const cols = ["ID", "X", "1000", "500", "200", "100", "50", "20", "10", "5", "2", "1"];
 
                     var table = document.createElement('table');
-                    
-                    var header_tr = document.createElement('tr');
-                        for (const col of cols) {
-                            var header_td = document.createElement('td');
-                            header_td.textContent = col;
-                            header_tr.appendChild(header_td);
-                        }
-                    table.appendChild(header_tr);
+
+                    var tr = document.createElement('tr');
+                    for (const col of cols) {
+                        var th = document.createElement('th');
+                        th.textContent = col;
+                        tr.appendChild(th);
+                    }
+                    table.appendChild(tr);
 
                     worksheet.eachRow({ includeEmpty: true }, function (row, rowNumber) {
                         if (row.getCell('N').result != null && row.getCell('N').result != 0) {
                             if (row.getCell('A').value != null) {
-                                output += `${rowNumber}:\t ${row.getCell('B').value} (${row.getCell('A').value}) ${Math.ceil(row.getCell('N').result)}\n`;
-                            } else {
-                                output += `${rowNumber}:\t ${Math.ceil(row.getCell('N').result)}\n`;
+                                var tr = document.createElement('tr');
+                                var x = Math.round(row.getCell('N').result)
+                                var temp = x;
+                                for (let i = 0; i < cols.length; i++) {
+                                    if (cols[i] === "ID") {
+                                        var td = document.createElement('td');
+                                        td.textContent = `${row.getCell('B').value} [${row.getCell('A').value}]`;
+                                        tr.appendChild(td);
+                                    } else if (cols[i] === "X") {
+                                        var td = document.createElement('td');
+                                        td.textContent = x;
+                                        tr.appendChild(td);
+                                    } else {
+                                        var tempMod = temp % cols[i];
+                                        console.log(tempMod);
+                                        var td = document.createElement('td');
+                                        td.textContent = (temp - tempMod) / cols[i];
+                                        tr.appendChild(td);
+                                        temp = tempMod;
+                                    }
+                                }
+                                table.appendChild(tr);
                             }
                         }
                     });
                     document.getElementById('output').appendChild(table);
-                    //document.getElementById('output').textContent = output;
                 };
-
                 reader.readAsArrayBuffer(file);
             }
         });
     </script>
-
 </body>
 
 </html>
