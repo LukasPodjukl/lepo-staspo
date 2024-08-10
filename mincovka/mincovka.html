@@ -23,7 +23,7 @@
     <input type="file" id="upload" />
     <pre id="output"></pre>
     <script>
-        document.getElementById('upload').addEventListener('change', async function (event) {
+        document.getElementById("upload").addEventListener("change", async function (event) {
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
@@ -33,49 +33,66 @@
                     await workbook.xlsx.load(arrayBuffer);
 
                     const worksheet = workbook.getWorksheet(1);
-                    let output = '';
+                    let output = "";
 
                     const cols = ["ID", "X", "1000", "500", "200", "100", "50", "20", "10", "5", "2", "1"];
 
-                    var table = document.createElement('table');
+                    var table = document.createElement("table");
 
-                    var tr = document.createElement('tr');
+                    var tr = document.createElement("tr");
                     for (const col of cols) {
-                        var th = document.createElement('th');
+                        var th = document.createElement("th");
                         th.textContent = col;
                         tr.appendChild(th);
                     }
                     table.appendChild(tr);
 
+                    const coins = new Map();
+                    coins.set("1000", 0);
+                    coins.set("500", 0);
+                    coins.set("200", 0);
+                    coins.set("100", 0);
+                    coins.set("50", 0);
+                    coins.set("20", 0);
+                    coins.set("10", 0);
+                    coins.set("5", 0);
+                    coins.set("2", 0);
+                    coins.set("1", 0);
+                    //console.log(coins.get("1000"));
+
                     worksheet.eachRow({ includeEmpty: true }, function (row, rowNumber) {
-                        if (row.getCell('N').result != null && row.getCell('N').result != 0) {
-                            if (row.getCell('A').value != null) {
-                                var tr = document.createElement('tr');
-                                var x = Math.round(row.getCell('N').result)
+                        if (row.getCell("N").result != null && row.getCell("N").result != 0) {
+                            if (row.getCell("A").value != null) {
+                                var tr = document.createElement("tr");
+                                var x = Math.round(row.getCell("N").result)
                                 var temp = x;
                                 for (let i = 0; i < cols.length; i++) {
                                     if (cols[i] === "ID") {
-                                        var td = document.createElement('td');
-                                        td.textContent = `${row.getCell('B').value} [${row.getCell('A').value}]`;
+                                        var td = document.createElement("td");
+                                        td.textContent = `${row.getCell("B").value} [${row.getCell("A").value}]`;
                                         tr.appendChild(td);
                                     } else if (cols[i] === "X") {
-                                        var td = document.createElement('td');
+                                        var td = document.createElement("td");
                                         td.textContent = x;
                                         tr.appendChild(td);
                                     } else {
                                         var tempMod = temp % cols[i];
-                                        console.log(tempMod);
-                                        var td = document.createElement('td');
+                                        var td = document.createElement("td");
                                         td.textContent = (temp - tempMod) / cols[i];
                                         tr.appendChild(td);
                                         temp = tempMod;
+                                        switch (cols[i]) {
+                                            case "1000":
+                                                
+                                                break;
+                                        }
                                     }
                                 }
                                 table.appendChild(tr);
                             }
                         }
                     });
-                    document.getElementById('output').appendChild(table);
+                    document.getElementById("output").appendChild(table);
                 };
                 reader.readAsArrayBuffer(file);
             }
