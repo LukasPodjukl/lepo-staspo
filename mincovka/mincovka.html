@@ -23,10 +23,34 @@
 
 <body>
     <h1>Mincovka</h1>
+    <label for="months">Měsíc:</label>
+    <select name="months" id="months">
+        <option value="N" selected>-</option>
+        <option value="J">Leden</option>
+        <option value="O">Únor</option>
+        <option value="T">Březen</option>
+        <option value="Y">Duben</option>
+        <option value="AE">Květen</option>
+        <option value="AJ">Červen</option>
+        <option value="AP">Červenec</option>
+        <option value="AU">Srpen</option>
+        <option value="AZ">Září</option>
+        <option value="BE">Říjen</option>
+        <option value="BJ">Listopad</option>
+        <option value="BO">Prosinec</option>
+    </select>
     <input type="file" id="upload" />
     <pre id="output"></pre>
     <script>
+        var month;
+        document.addEventListener("DOMContentLoaded", function(event) {
+            month = document.getElementById("months").options[document.getElementById("months").selectedIndex].value;
+        });
+        document.getElementById("months").addEventListener("change", async function (event) {
+            month = this.value;
+        });
         document.getElementById("upload").addEventListener("change", async function (event) {
+            console.log(month);
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
@@ -70,10 +94,10 @@
 
                     if (tbody) {
                         worksheet.eachRow({ includeEmpty: true }, function (row, rowNumber) {
-                            if (row.getCell("N").result != null && row.getCell("N").result != 0) {
+                            if (row.getCell(month).result != null && row.getCell(month).result != 0) {
                                 if (row.getCell("A").value != null) {
                                     var tr = document.createElement("tr");
-                                    var x = Math.round(row.getCell("N").result)
+                                    var x = Math.round(row.getCell(month).result)
                                     var temp = x;
                                     for (const [key, value] of cols.entries()) {
                                         var td = document.createElement("td");
